@@ -1,0 +1,11 @@
+body {
+    background-color: #212121;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.title {
+    color: #FAFAFA;
+    font-size: 3rem;
+    margin-left: 20px;
+    margin-top: 20px;
+}
