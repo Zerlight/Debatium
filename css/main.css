@@ -1,11 +1,126 @@
 body {
     background-color: #212121;
     font-family: 'Noto Sans SC', sans-serif;
+    margin: 0px;
 }
 
 .title {
+    float: left;
     color: #FAFAFA;
     font-size: 3rem;
-    margin-left: 20px;
-    margin-top: 20px;
+    padding: 40px;
+    padding-bottom: 0px;
+}
+
+.key-hint {
+    padding-top: 50px;
+    padding-right: 40px;
+    padding-bottom: 0px;
+    float: right;
+    color: #424242;
+    font-size: 1rem;
+}
+
+.content {
+    display: flex;
+    padding: 40px;
+    width: calc(100% - 80px);
+    height: 100%;
+}
+
+.card {
+    border-radius: 20px;
+    background-color: #424242;
+    padding: 20px;
+    box-shadow: 0 0 4px #212121;
+}
+
+.card-title {
+    text-align:inherit;
+    color: #FAFAFA;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.card-subtitle {
+    color: #78909C;
+    font-size: 1rem;
+    margin-top:5px;
+    margin-bottom: 5px;
+    margin-left: 36px;
+    margin-right: 36px;
+}
+
+.card-selection {
+    display: flex;
+    background-color: #424242;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 15px;
+    padding-left: 56px;
+    padding-right: 56px;
+    transition: background-color 0.4s ease-out;
+}
+
+.selection-text {
+    color: #FAFAFA;
+    font-size: 1.3rem;
+}
+
+.selection-btn > button , input{
+    border-radius: 5px;
+    padding: 10px 20px 10px 20px;
+    background-color: #616161;
+    border: none;
+    color: #FAFAFA;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: box-shadow 0.6s ease-in;
+}
+
+.card-selection:hover {
+    background-color: #616161;
+}
+
+.selection-btn > button:hover , input:hover , input:focus {
+    background-color: #9E9E9E;
+    color: #424242;
+    box-shadow: 0 1px 4px #212121;
+}
+
+.material-symbols-outlined {
+    margin-right: 10px;
+    display: inline-block;
+    color: #FAFAFA;
+}
+
+.action {
+    font-size: 3rem;
+    color: #FAFAFA;
+    padding-left: 10%;
+    margin-top: 10%;
+}
+
+.action > .material-symbols-outlined {
+    font-size: 55px;
+}
+
+.action .selection-btn {
+    text-align: center;
+    padding-left: 0;
+}
+
+.action .selection-btn > button{
+    font-size: 1.5rem;
+    padding: 20px 40px 20px 40px;
+}
+
+.error-text {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 1rem;
+    color: #C62828;
 }
