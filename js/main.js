@@ -30,8 +30,8 @@ const Func = class func {
             callback();
             return；
         }
-        $(query[position].selector).attr('status','on').countdowntimer({seconds:query[position].second});
-        if(query[position].titlesel) $(titlesel).html(query[position].title ? query[position].title : '');
+        $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
+        if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
         var call = _this.countdown(query,position+1,_this,callback,call)
         document.addEventListener('keydown',call)
     }
@@ -68,7 +68,13 @@ const Func = class func {
                 $('#1').attr('status','on');
                 $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
-                    let query = [{selector:}]
+                let i = _this.duration.state
+                    let query = [
+                        {selector:'#1',second:i},
+                        {selector:'#2',second:i},
+                        {selector:'#1',second:i,title:'正方二辩'},
+                        {selector:'#2',second:i,title:'反方二辩'},
+                    ]
                 })
             })
             document.removeEventListener('keydown',callback);
