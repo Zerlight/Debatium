@@ -22,6 +22,19 @@ const Func = class func {
             }
         })
     }
+    countdown(query,position,_this,callback,call){
+        if(event.code != _this.nextKey) return;
+        if(call) document.removeEventListener('keydown',call);
+        if(position>0) $(query[position-1].selector).attr('status','off')
+        if(position>=query.length){
+            callback();
+            return；
+        }
+        $(query[position].selector).attr('status','on').countdowntimer({seconds:query[position].second});
+        if(query[position].titlesel) $(titlesel).html(query[position].title ? query[position].title : '');
+        var call = _this.countdown(query,position+1,_this,callback,call)
+        document.addEventListener('keydown',call)
+    }
     getPage() {
         $.ajax({
             url: `./pages/counter.html`,
@@ -55,10 +68,7 @@ const Func = class func {
                 $('#1').attr('status','on');
                 $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
-                    $('#counter_1').countdowntimer({
-                        seconds:_this.duration.state
-                    })
-                    let callback = 
+                    let query = [{selector:}]
                 })
             })
             document.removeEventListener('keydown',callback);
