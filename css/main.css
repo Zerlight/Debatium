@@ -22,6 +22,7 @@ body {
 }
 
 .content {
+    justify-content: space-between;
     display: flex;
     padding: 40px;
     width: calc(100% - 80px);
@@ -123,4 +124,23 @@ body {
     padding-top: 20px;
     font-size: 1rem;
     color: #C62828;
+}
+
+.counter {
+    text-align: center;
+    width: 100%;
+    font-size: 4.5rem;
+    color: #FAFAFA;
+}
+
+.debate-card {
+    opacity: 1.0;
+    background-color: #424242;
+    transition: all 0.6s ease-in;
+}
+
+.debate-card[status=off] {
+    background-color: #212121;
+    opacity: 0.3;
+    box-shadow: 0 0 0;
 }

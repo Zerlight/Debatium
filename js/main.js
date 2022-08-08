@@ -47,7 +47,20 @@ const Func = class func {
         let hintText = `继续=${_this.nextKey} | 跳过=${_this.skipKey} | ${_this.nxbjKey ? `你先别急=${_this.nxbjKey}` : `你先别急未启用`} | ${_this.bellKey ? `手动响铃=${_this.bellKey}` : `手动响铃未启用`}`;
         $('.key-hint').html(hintText);
         let callback = function(event){
-            if(event.code != func.nextKey) return;
+            if(event.code != _this.nextKey) return;
+            $('.title').html('立论陈词');
+            $('#content').animate({opacity:0.0},500,'swing',function(){
+                $('#content').html(_this.counterPage);
+                $('#title_1').html('正方一辩');
+                $('#1').attr('status','on');
+                $('#title_2').html('反方一辩');
+                $('#content').animate({opacity:1.0},500,'swing',function(){
+                    $('#counter_1').countdowntimer({
+                        seconds:_this.duration.state
+                    })
+                    let callback = 
+                })
+            })
             document.removeEventListener('keydown',callback);
         }
         document.addEventListener('keydown',callback)
