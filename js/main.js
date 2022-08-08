@@ -12,6 +12,8 @@ const Func = class func {
         this.duration.conclusion = 3 * 60;
         this.counterPage = null;
         this.sparePage = null;
+        this.keyDownCounter = 0;
+        this.tempVar = null;
     }
     applyPage(target,callback) {
         $.ajax({
@@ -22,18 +24,36 @@ const Func = class func {
             }
         })
     }
-    countdown(query,position,_this,callback,call){
-        if(event.code != _this.nextKey) return;
-        if(call) document.removeEventListener('keydown',call);
-        if(position>0) $(query[position-1].selector).attr('status','off')
-        if(position>=query.length){
-            callback();
-            return；
-        }
+    keyDownDaemon(key){
+        document.addEventListener('keydown',function(event){
+            if(event.code != key) return;
+            funcer.keyDownCounter ++;
+        });
+    }
+    resetKeyCounter(){
+        this.keyDownCounter = 0;
+    }
+    countdown(query,position,key,callback){
         $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
-        if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
-        var call = _this.countdown(query,position+1,_this,callback,call)
-        document.addEventListener('keydown',call)
+        var position = 1;
+        funcer.tempVar = [query,position,key]
+        for(position;position<query.length+1;position++){
+            let call = function(event,query=funcer.tempVar[0],position=funcer.tempVar[1],key=funcer.tempVar[2],callback){
+                if(typeof event !== 'undefined' && event.code !== key) return;
+                console.log(funcer.keyDownCounter);
+                if(funcer.keyDownCounter != position) return;
+                document.addEventListener('keydown',call);
+                if(position>0) $(query[position-1].selector).attr('status','off');
+                if(position>=query.length){
+                    callback();
+                    return;
+                }
+                $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
+                if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
+                document.removeEventListener('keydown',call);
+            }
+            document.addEventListener('keydown',call);
+        }
     }
     getPage() {
         $.ajax({
@@ -68,13 +88,21 @@ const Func = class func {
                 $('#1').attr('status','on');
                 $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
-                let i = _this.duration.state
-                    let query = [
-                        {selector:'#1',second:i},
-                        {selector:'#2',second:i},
-                        {selector:'#1',second:i,title:'正方二辩'},
-                        {selector:'#2',second:i,title:'反方二辩'},
-                    ]
+                let i = _this.duration.state;
+                _this.keyDownDaemon(_this.nextKey);
+                let query = [
+                    {selector:'#1',second:i},
+                    {selector:'#2',second:i},
+                    {selector:'#1',second:i,title:'正方二辩'},
+                    {selector:'#2',second:i,title:'反方二辩'},
+                    {selector:'#1',second:i,title:'正方三辩'},
+                    {selector:'#2',second:i,title:'反方三辩'},
+                    {selector:'#1',second:i,title:'正方四辩'},
+                    {selector:'#2',second:i,title:'反方四辩'},
+                ]
+                    _this.countdown(query,0,_this.nextKey,function(){
+                        console.log('hello')
+                    })
                 })
             })
             document.removeEventListener('keydown',callback);
@@ -98,7 +126,7 @@ window.onload = function(){
                 func.nextKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
-            document.addEventListener('keydown',callback)
+            document.addEventListener('keydown',callback);
         })
         $('#btn_2').click(function(){
             $(this).html('请按按键');
@@ -153,3 +181,5 @@ window.onload = function(){
         })
     });
 }
+
+const funcer = new Func();
