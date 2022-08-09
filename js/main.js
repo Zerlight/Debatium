@@ -14,6 +14,7 @@ const Func = class func {
         this.sparePage = null;
         this.keyDownCounter = 0;
         this.tempVar = null;
+        this.thisKey = null;
     }
     applyPage(target,callback) {
         $.ajax({
@@ -27,33 +28,34 @@ const Func = class func {
     keyDownDaemon(key){
         document.addEventListener('keydown',function(event){
             if(event.code != key) return;
+            funcer.thisKey = key;
             funcer.keyDownCounter ++;
         });
     }
     resetKeyCounter(){
         this.keyDownCounter = 0;
     }
-    countdown(query,position,key,callback){
+    countdown(query,key,callback){
+        let position = 0;
         $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
-        var position = 1;
-        funcer.tempVar = [query,position,key]
-        for(position;position<query.length+1;position++){
-            let call = function(event,query=funcer.tempVar[0],position=funcer.tempVar[1],key=funcer.tempVar[2],callback){
-                if(typeof event !== 'undefined' && event.code !== key) return;
-                console.log(funcer.keyDownCounter);
-                if(funcer.keyDownCounter != position) return;
-                document.addEventListener('keydown',call);
-                if(position>0) $(query[position-1].selector).attr('status','off');
-                if(position>=query.length){
-                    callback();
-                    return;
-                }
-                $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
-                if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
-                document.removeEventListener('keydown',call);
-            }
-            document.addEventListener('keydown',call);
+        funcer.tempVar = [query,1,key,callback]
+        for(let i=0;i<query.length+1;i++){
+            document.addEventListener('keydown',funcer.listenerEX(funcer.tempVar[0],funcer.tempVar[1],funcer.tempVar[2],funcer.tempVar[3]));
+            funcer.tempVar[1]++;
         }
+    }
+    listenerEX(query,position,key,callback){
+        console.log(funcer.thisKey,query,position,key)
+        if(funcer.thisKey != key) return;
+        if(funcer.keyDownCounter != position) return;
+        if(position>=query.length){
+            callback();
+            return;
+        }
+        if(position>0) $(query[position-1].selector).attr('status','off').children('.counter').countdowntimer('destroy').html('00:00');
+        $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
+        if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
+        document.removeEventListener('keydown',call);
     }
     getPage() {
         $.ajax({
@@ -100,7 +102,7 @@ const Func = class func {
                     {selector:'#1',second:i,title:'正方四辩'},
                     {selector:'#2',second:i,title:'反方四辩'},
                 ]
-                    _this.countdown(query,0,_this.nextKey,function(){
+                    _this.countdown(query,_this.nextKey,function(){
                         console.log('hello')
                     })
                 })

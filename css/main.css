@@ -127,6 +127,7 @@ body {
 }
 
 .counter {
+    font-family: sans-serif !important;
     text-align: center;
     width: 100%;
     font-size: 4.5rem;
