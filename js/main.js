@@ -102,9 +102,8 @@ const Func = class func {
                 $(this).countdowntimer('destroy').html('00:00');
             })
         } catch(e){}
-        funcer.bell30s = false;
-        funcer.bellFinal = false;
-        $(counterList[0].selector).attr('status','on').children('.counter').countdowntimer({seconds:second,displayFormat:'HS',timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+        $(counterList[0].selector).attr('status','on');
+        $(counterList[0].selector+' > .counter').countdowntimer({seconds:second,timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
         counterList.shift();
     }
     getPage() {
