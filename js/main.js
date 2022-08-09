@@ -33,6 +33,10 @@ const Func = class func {
         this.duration.conclusion = 3 * 60;
         this.counterPage = null;
         this.sparePage = null;
+        this.pauseInfo = false;
+        this.currentSelector = null;
+        this.tempArg = null;
+        this.tempSel = null;
     }
     ring30sBell(){
         let audio = document.getElementById('sound');
@@ -43,11 +47,22 @@ const Func = class func {
         audio.play();
     }
     pauseCounter(){
-        try{
-            $('.counter').each(function(){
-                $(this).countdowntimer("pause","pause");
-            })
-        } catch(e){}
+        if(funcer.currentSelector == 'free') return;
+        if(typeof funcer.pauseInfo == 'string'){
+            if(funcer.pauseInfo) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+            else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+        }else{
+            if(funcer.currentSelector == '#1'){
+                if(funcer.pauseInfo[0] == null) return;
+                if(funcer.pauseInfo[0]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+                else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+            }
+            if(funcer.currentSelector == '#2'){
+                if(funcer.pauseInfo[1] == null) return;
+                if(funcer.pauseInfo[1]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+                else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+            }
+        }
     }
     applyPage(target,callback) {
         $.ajax({
@@ -73,12 +88,20 @@ const Func = class func {
         let second = 0;
         switch(counterList[0].type){
             case 'freeInit':
-                let hintText = `切换计时方=${_this.nextKey} | 结束=${_this.skipKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
+                funcer.currentSelector = 'free';
+                let hintText = `切换计时方=${funcer.nextKey} | 结束=${funcer.skipKey} | 暂停计时=${funcer.pauseKey} | 手动响铃=${funcer.bellKey}`;
                 $('.key-hint').html(hintText);
-                funcer.freeDebateHandler('init');
+                $('.counter').each(function(){
+                    $(this).children().countdowntimer('stop','stop');
+                    $(this).children().countdowntimer('destroy');
+                })
+                funcer.tempArg = 'init';
+                funcer.freeDebateHandler();
                 return;
             case 'freeStart':
-                funcer.freeDebateHandler('start',counterList[0].selector);
+                funcer.tempArg = 'start';
+                funcer.tempSel = counterList[0].selector;
+                funcer.freeDebateHandler();
                 counterList[0] = {type:'free'};
                 return;
             case 'free':
@@ -97,14 +120,73 @@ const Func = class func {
                 second = funcer.duration.conclusion;
                 break;
         }
+        funcer.currentSelector = counterList[0].selector;
+        $(counterList[0].selector+' > .card-title').html(counterList[0].title);
+        if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector+' > .card-title').html(counterList[1].title);
         try{
             $('.counter').each(function(){
-                $(this).countdowntimer('destroy').html('00:00');
+                $(this).children().countdowntimer('stop','stop');
+                $(this).children().countdowntimer('destroy');
+                $(this).children().html('请等候');
             })
         } catch(e){}
         $(counterList[0].selector).attr('status','on');
-        $(counterList[0].selector+' > .counter').countdowntimer({seconds:second,timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+        $(counterList[0].selector).children('.counter').children().countdowntimer({seconds:second,timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
         counterList.shift();
+    }
+    freeDebateHandler(){
+        if(funcer.tempArg='init'){
+            $('.title').html('自由辩论·等候开始');
+            $('#1').children('.card-title').html(counterList[0].title[0]);
+            $('#2').children('.card-title').html(counterList[0].title[1]);
+            $('#1').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[0]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+            $('#1').children('.counter').children().countdowntimer('pause','pause');
+            $('#2').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[1]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+            $('#2').children('.counter').children().countdowntimer('pause','pause');
+            funcer.pauseInfo = [false,false];
+            counterList.shift();
+            let callback = function(event){
+                if(event.code == funcer.nextKey&&funcer.pauseInfo == [null,null]){
+                    counterList.shift();
+                    $('.counter').each(function(){
+                        $(this).children().countdowntimer('stop','stop');
+                        $(this).children().countdowntimer('destroy');
+                        $(this).children().html('已结束');
+                    })
+                    return;
+                }
+                if(event.code != funcer.skipKey) return;
+                counterList.shift();
+                document.removeEventListener('keydown',callback);
+            }
+            document.addEventListener('keydown',callback);
+            funcer.tempArg = null;
+            return;
+        }
+        if(funcer.tempArg='start'){
+            $(funcer.tempSel).attr('status','on');
+            $(funcer.tempSel).children('.counter').children().countdowntimer('pause','resume');
+            if(funcer.tempSel == '#1') funcer.pauseInfo = [false,true]; else funcer.pauseInfo = [true,false];
+            funcer.currentSelector = sel;
+            funcer.tempArg = null;
+            funcer.tempSel = null;
+            return;
+        }
+        if(funcer.currentSelector == '#1'){
+            if(funcer.pauseInfo[1] == null) return;
+            funcer.pauseInfo = [true,false];
+            $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','pause');
+            $(funcer.currentSelector).attr('status','off');
+            funcer.currentSelector = '#2';
+            $('#2').children('.counter').children().countdowntimer('pause','resume');
+        }else{
+            if(funcer.pauseInfo[0] == null) return;
+            funcer.pauseInfo = [false,true];
+            $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','pause');
+            $(funcer.currentSelector).attr('status','off');
+            funcer.currentSelector = '#1';
+            $('#1').children('.counter').children().countdowntimer('pause','resume');
+        }
     }
     getPage() {
         $.ajax({
@@ -122,27 +204,24 @@ const Func = class func {
             }
         })
     }
-    startMain(_this){
+    startMain(){
         $('#content').animate({opacity:0.0},500,'swing',function(){
-            $('#content').html(_this.sparePage);
+            $('#content').html(funcer.sparePage);
             $('#content').animate({opacity:1.0},500,'swing')
         })
         $('.title').html('主席介绍')
-        let hintText = `继续/跳过=${_this.nextKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
+        let hintText = `继续/跳过=${funcer.nextKey} | 暂停计时=${funcer.pauseKey} | 手动响铃=${funcer.bellKey}`;
         $('.key-hint').html(hintText);
         let callback = function(event){
-            if(event.code != _this.nextKey) return;
+            if(event.code != funcer.nextKey) return;
             $('#content').animate({opacity:0.0},500,'swing',function(){
-                $('#content').html(_this.counterPage);
+                $('#content').html(funcer.counterPage);
                 $('#content').animate({opacity:1.0},500,'swing',function(){
                     funcer.counterDaemon();
                     document.addEventListener('keydown',function(event){
-                        if(event.code != funcer.nextKey) return;
-                        funcer.counterDaemon();
-                    })
-                    document.addEventListener('keydown',function(event){
-                        if(event.code != funcer.bellKey) return;
-                        funcer.ring30sBell();
+                        if(event.code == funcer.nextKey) funcer.counterDaemon();
+                        if(event.code == funcer.bellKey) funcer.ring30sBell();
+                        if(event.code == funcer.pauseKey) funcer.pauseCounter();
                     })
                 })
             })
@@ -153,18 +232,17 @@ const Func = class func {
 }
 
 window.onload = function(){
-    func = new Func();
-    func.applyPage('home' , function(){
-        $('#btn_1').html(func.nextKey);
-        $('#btn_2').html(func.skipKey);
-        $('#btn_3').html(func.pauseKey);
-        $('#btn_4').html(func.bellKey);
-        func.getPage();
+    funcer.applyPage('home' , function(){
+        $('#btn_1').html(funcer.nextKey);
+        $('#btn_2').html(funcer.skipKey);
+        $('#btn_3').html(funcer.pauseKey);
+        $('#btn_4').html(funcer.bellKey);
+        funcer.getPage();
         $('#btn_1').click(function(){
             $(this).html('请按按键');
             let callback = function(event){
                 $('#btn_1').html(event.code);
-                func.nextKey = event.code;
+                funcer.nextKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
             document.addEventListener('keydown',callback);
@@ -173,7 +251,7 @@ window.onload = function(){
             $(this).html('请按按键');
             let callback = function(event){
                 $('#btn_2').html(event.code);
-                func.skipKey = event.code;
+                funcer.skipKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
             document.addEventListener('keydown',callback)
@@ -182,7 +260,7 @@ window.onload = function(){
             $(this).html('请按按键');
             let callback = function(event){
                 $('#btn_3').html(event.code);
-                func.pauseKey = event.code;
+                funcer.pauseKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
             document.addEventListener('keydown',callback)
@@ -191,16 +269,16 @@ window.onload = function(){
             $(this).html('请按按键');
             let callback = function(event){
                 $('#btn_4').html(event.code);
-                func.bellKey = event.code;
+                funcer.bellKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
             document.addEventListener('keydown',callback)
         })
-        $('#ipt_1').val(func.duration.state);
-        $('#ipt_2').val(func.duration.query);
-        $('#ipt_3').val(func.duration.queryConclude);
-        $('#ipt_4').val(func.duration.free);
-        $('#ipt_5').val(func.duration.conclusion);
+        $('#ipt_1').val(funcer.duration.state);
+        $('#ipt_2').val(funcer.duration.query);
+        $('#ipt_3').val(funcer.duration.queryConclude);
+        $('#ipt_4').val(funcer.duration.free);
+        $('#ipt_5').val(funcer.duration.conclusion);
         $('#btn_5').click(function(){
             let checkList = ['#ipt_1','#ipt_2','#ipt_3','#ipt_4','#ipt_5'];
             checkList.forEach((item) => {
@@ -209,16 +287,16 @@ window.onload = function(){
                     return;
                 }
             })
-            if(!func.counterPage||!func.sparePage){
+            if(!funcer.counterPage||!funcer.sparePage){
                 $('#error-1').html('相关资源尚未加载完毕，请稍后再试。')
                 return;
             }
-            func.duration.state = Number($('#ipt_1').val())
-            func.duration.query = Number($('#ipt_2').val())
-            func.duration.queryConclude = Number($('#ipt_3').val())
-            func.duration.free = Number($('#ipt_4').val())
-            func.duration.conclusion = Number($('#ipt_5').val())
-            func.startMain(func);
+            funcer.duration.state = Number($('#ipt_1').val())
+            funcer.duration.query = Number($('#ipt_2').val())
+            funcer.duration.queryConclude = Number($('#ipt_3').val())
+            funcer.duration.free = Number($('#ipt_4').val())
+            funcer.duration.conclusion = Number($('#ipt_5').val())
+            funcer.startMain();
         })
     });
 }

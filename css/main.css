@@ -126,7 +126,7 @@ body {
     color: #C62828;
 }
 
-.counter {
+.counter > div{
     font-family: sans-serif !important;
     text-align: center;
     width: 100%;
