@@ -1,2 +1,2 @@
 # Debatium
-A dount-down tool specially designed for standard debates.
+辩论现场实用工具
