@@ -24,8 +24,8 @@ const Func = class func {
         this.duration = class{};
         this.nextKey = 'PageDown';
         this.skipKey = 'PageUp';
-        this.nxbjKey = null;
-        this.bellKey = null;
+        this.pauseKey = 'keyP';
+        this.bellKey = 'keyB';
         this.duration.state = 3 * 60;
         this.duration.query = 30;
         this.duration.queryConclude = 2 * 60;
@@ -110,7 +110,7 @@ const Func = class func {
             $('#content').animate({opacity:1.0},500,'swing')
         })
         $('.title').html('主席介绍')
-        let hintText = `继续=${_this.nextKey} | 跳过=${_this.skipKey} | ${_this.nxbjKey ? `你先别急=${_this.nxbjKey}` : `你先别急未启用`} | ${_this.bellKey ? `手动响铃=${_this.bellKey}` : `手动响铃未启用`}`;
+        let hintText = `继续=${_this.nextKey} | 跳过=${_this.skipKey} | ${_this.pauseKey ? `暂停计时=${_this.pauseKey}` : `你先别急未启用`} | ${_this.bellKey ? `手动响铃=${_this.bellKey}` : `手动响铃未启用`}`;
         $('.key-hint').html(hintText);
         let callback = function(event){
             if(event.code != _this.nextKey) return;
@@ -121,10 +121,10 @@ const Func = class func {
                 $('#1').attr('status','on');
                 $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
-                let i = _this.duration.state;
-                _this.keyDownDaemon(_this.nextKey)
-                    _this.countdown(query,_this.nextKey,function(){
-                        console.log('hello')
+                    funcer.counterDaemon()
+                    document.addEventListener('keydown',function(event){
+                        if(event.code != funcer.nextKey) return;
+                        funcer.counterDaemon();
                     })
                 })
             })
@@ -139,8 +139,8 @@ window.onload = function(){
     func.applyPage('home' , function(){
         $('#btn_1').html(func.nextKey);
         $('#btn_2').html(func.skipKey);
-        $('#btn_3').html(func.nxbjKey ? func.nxbjKey : '未定义');
-        $('#btn_4').html(func.bellKey ? func.bellKey : '未定义');
+        $('#btn_3').html(func.pauseKey);
+        $('#btn_4').html(func.bellKey);
         func.getPage();
         $('#btn_1').click(function(){
             $(this).html('请按按键');
@@ -164,7 +164,7 @@ window.onload = function(){
             $(this).html('请按按键');
             let callback = function(event){
                 $('#btn_3').html(event.code);
-                func.nxbjKey = event.code;
+                func.pauseKey = event.code;
                 document.removeEventListener('keydown',callback);
             }
             document.addEventListener('keydown',callback)
