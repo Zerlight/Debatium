@@ -58,7 +58,7 @@ const Func = class func {
         let second = 0;
         switch(counterList[0].type){
             case 'freeInit':
-                let hintText = `切换计时方=${_this.nextKey} | 跳过自由辩论=${_this.skipKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
+                let hintText = `切换计时方=${_this.nextKey} | 结束=${_this.skipKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
                 $('.key-hint').html(hintText);
                 funcer.freeDebateHandler('init');
                 return;
