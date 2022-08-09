@@ -1,4 +1,4 @@
-const counterList = [
+let counterList = [
     {selector:'#1',type:'state',title:'正方一辩'},
     {selector:'#2',type:'state',title:'反方一辩'},
     {selector:'#1',type:'state',title:'正方二辩'},
@@ -33,9 +33,6 @@ const Func = class func {
         this.duration.conclusion = 3 * 60;
         this.counterPage = null;
         this.sparePage = null;
-        this.bell30s = false;
-        this.bellFinal = false;
-        this.bellDaemonInterval = null;
     }
     ring30sBell(){
         let audio = document.getElementById('sound');
@@ -45,24 +42,19 @@ const Func = class func {
         let audio = document.getElementById('sound3');
         audio.play();
     }
+    pauseCounter(){
+        try{
+            $('.counter').each(function(){
+                $(this).countdowntimer("pause","pause");
+            })
+        }
+    }
     applyPage(target,callback) {
         $.ajax({
             url: `./pages/${target}.html`,
             success: (data) => {
                 $('#content').html(data);
                 callback();
-            }
-        })
-    }
-    bellDaemon(){
-        $('.counter').each(function(){
-            if($(this).html()=='00:30'&&!funcer.bell30s){
-                funcer.bell30s = true;
-                ring30sBell();
-            }
-            if($(this).html()=='00:00'&&!funcer.bellFinal){
-                funcer.bellFinal = true;
-                ringFinalBell();
             }
         })
     }
@@ -112,7 +104,7 @@ const Func = class func {
         }
         funcer.bell30s = false;
         funcer.bellFinal = false;
-        $(counterList[0].selector).attr('status','on').children('.counter').countdowntimer({seconds:second});
+        $(counterList[0].selector).attr('status','on').children('.counter').countdowntimer({seconds:second,displayFormat:'HS',timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
         counterList.shift();
     }
     getPage() {
@@ -153,7 +145,6 @@ const Func = class func {
                         if(event.code != funcer.bellKey) return;
                         funcer.ring30sBell();
                     })
-                    funcer.bellDaemonInterval = setInterval(bellDaemon,100);
                 })
             })
             document.removeEventListener('keydown',callback);
