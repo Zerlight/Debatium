@@ -27,15 +27,12 @@ const Func = class func {
         this.nxbjKey = null;
         this.bellKey = null;
         this.duration.state = 3 * 60;
-        this.duration.query = 2 * 60;
+        this.duration.query = 30;
         this.duration.queryConclude = 2 * 60;
-        this.duration.free = 8 * 60;
+        this.duration.free = 4 * 60;
         this.duration.conclusion = 3 * 60;
         this.counterPage = null;
         this.sparePage = null;
-        this.keyDownCounter = 0;
-        this.tempVar = null;
-        this.thisKey = null;
     }
     applyPage(target,callback) {
         $.ajax({
@@ -46,37 +43,50 @@ const Func = class func {
             }
         })
     }
-    keyDownDaemon(key){
-        document.addEventListener('keydown',function(event){
-            if(event.code != key) return;
-            funcer.thisKey = key;
-            funcer.keyDownCounter ++;
-        });
-    }
-    resetKeyCounter(){
-        this.keyDownCounter = 0;
-    }
-    countdown(query,key,callback){
-        let position = 0;
-        $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
-        funcer.tempVar = [query,1,key,callback]
-        for(let i=0;i<query.length+1;i++){
-            document.addEventListener('keydown',funcer.listenerEX(funcer.tempVar[0],funcer.tempVar[1],funcer.tempVar[2],funcer.tempVar[3]));
-            funcer.tempVar[1]++;
-        }
-    }
-    listenerEX(query,position,key,callback){
-        console.log(funcer.thisKey,query,position,key)
-        if(funcer.thisKey != key) return;
-        if(funcer.keyDownCounter != position) return;
-        if(position>=query.length){
-            callback();
+    counterDaemon(){
+        if(counterList.length == 0){
+            $('#content').animate({opacity:0.0},500,'swing',function(){
+            $('#content').html(funcer.sparePage);
+            $('.title').html('已结束');
             return;
+        })
         }
-        if(position>0) $(query[position-1].selector).attr('status','off').children('.counter').countdowntimer('destroy').html('00:00');
-        $(query[position].selector).attr('status','on').children('.counter').countdowntimer({seconds:query[position].second});
-        if(query[position].title) $(query[position].selector).children('.card-title').html(query[position].title);
-        document.removeEventListener('keydown',call);
+        if(typeof counterList[0].mainTitle != 'undefined') $('.title').html(counterList[0].mainTitle);
+        $('.debate-card').each(function(){
+            $(this).attr('status','off');
+        })
+        let second = 0;
+        switch(counterList[0].type){
+            case 'freeInit':
+                funcer.freeDebateHandler('init');
+                return;
+            case 'freeStart':
+                funcer.freeDebateHandler('start',counterList[0].selector);
+                counterList[0] = {type:'free'};
+                return;
+            case 'free':
+                funcer.freeDebateHandler('');
+                return;
+            case 'state':
+                second = funcer.duration.state;
+                break;
+            case 'query':
+                second = funcer.duration.query;
+                break;
+            case 'queryConclude':
+                second = funcer.duration.queryConclude;;
+                break;
+            case 'conclusion':
+                second = funcer.duration.conclusion;
+                break;
+        }
+        try{
+            $('.counter').each(function(){
+                $(this).countdowntimer('destroy').html('00:00');
+            })
+        }
+        $(counterList[0].selector).attr('status','on').children('.counter').countdowntimer({seconds:second});
+        counterList.shift();
     }
     getPage() {
         $.ajax({
