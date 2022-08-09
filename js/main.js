@@ -47,7 +47,7 @@ const Func = class func {
             $('.counter').each(function(){
                 $(this).countdowntimer("pause","pause");
             })
-        }
+        } catch{}
     }
     applyPage(target,callback) {
         $.ajax({
@@ -101,7 +101,7 @@ const Func = class func {
             $('.counter').each(function(){
                 $(this).countdowntimer('destroy').html('00:00');
             })
-        }
+        } catch{}
         funcer.bell30s = false;
         funcer.bellFinal = false;
         $(counterList[0].selector).attr('status','on').children('.counter').countdowntimer({seconds:second,displayFormat:'HS',timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
