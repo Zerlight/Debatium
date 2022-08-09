@@ -1,3 +1,24 @@
+const counterList = [
+    {selector:'#1',type:'state',title:'正方一辩'},
+    {selector:'#2',type:'state',title:'反方一辩'},
+    {selector:'#1',type:'state',title:'正方二辩'},
+    {selector:'#2',type:'state',title:'反方二辩'},
+    {selector:'#1',type:'query',title:'正三提问',mainTitle:'质询'},
+    {selector:'#2',type:'query',title:'反一回答'},
+    {selector:'#2',type:'query',title:'反二回答'},
+    {selector:'#2',type:'query',title:'反四回答'},
+    {selector:'#2',type:'query',title:'反三提问'},
+    {selector:'#1',type:'query',title:'正一回答'},
+    {selector:'#1',type:'query',title:'正二回答'},
+    {selector:'#1',type:'query',title:'正四回答'},
+    {selector:'#1',type:'queryConclude',title:'正方三辩',mainTitle:'质询小结'},
+    {selector:'#2',type:'queryConclude',title:'反方三辩'},
+    {type:'freeInit',maintitle:'自由辩论',title:['正方','反方']},
+    {selector:'#2',type:'freeStart'},
+    {selector:'#2',type:'conclusion',title:'反方四辩',mainTitle:'总结'},
+    {selector:'#1',type:'conclusion',title:'正方四辩',}
+]
+
 const Func = class func {
     constructor(){
         this.duration = class{};
@@ -91,17 +112,7 @@ const Func = class func {
                 $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
                 let i = _this.duration.state;
-                _this.keyDownDaemon(_this.nextKey);
-                let query = [
-                    {selector:'#1',second:i},
-                    {selector:'#2',second:i},
-                    {selector:'#1',second:i,title:'正方二辩'},
-                    {selector:'#2',second:i,title:'反方二辩'},
-                    {selector:'#1',second:i,title:'正方三辩'},
-                    {selector:'#2',second:i,title:'反方三辩'},
-                    {selector:'#1',second:i,title:'正方四辩'},
-                    {selector:'#2',second:i,title:'反方四辩'},
-                ]
+                _this.keyDownDaemon(_this.nextKey)
                     _this.countdown(query,_this.nextKey,function(){
                         console.log('hello')
                     })
