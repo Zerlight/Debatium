@@ -58,6 +58,8 @@ const Func = class func {
         let second = 0;
         switch(counterList[0].type){
             case 'freeInit':
+                let hintText = `切换计时方=${_this.nextKey} | 跳过自由辩论=${_this.skipKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
+                $('.key-hint').html(hintText);
                 funcer.freeDebateHandler('init');
                 return;
             case 'freeStart':
@@ -110,16 +112,12 @@ const Func = class func {
             $('#content').animate({opacity:1.0},500,'swing')
         })
         $('.title').html('主席介绍')
-        let hintText = `继续=${_this.nextKey} | 跳过=${_this.skipKey} | ${_this.pauseKey ? `暂停计时=${_this.pauseKey}` : `你先别急未启用`} | ${_this.bellKey ? `手动响铃=${_this.bellKey}` : `手动响铃未启用`}`;
+        let hintText = `继续/跳过=${_this.nextKey} | 暂停计时=${_this.pauseKey} | 手动响铃=${_this.bellKey}`;
         $('.key-hint').html(hintText);
         let callback = function(event){
             if(event.code != _this.nextKey) return;
-            $('.title').html('立论陈词');
             $('#content').animate({opacity:0.0},500,'swing',function(){
                 $('#content').html(_this.counterPage);
-                $('#title_1').html('正方一辩');
-                $('#1').attr('status','on');
-                $('#title_2').html('反方一辩');
                 $('#content').animate({opacity:1.0},500,'swing',function(){
                     funcer.counterDaemon()
                     document.addEventListener('keydown',function(event){
