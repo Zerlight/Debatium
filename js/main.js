@@ -100,12 +100,12 @@ const Func = class func {
                 break;
             case 'freeStart':
                 funcer.currentSelector = counterList[0].selector;
-                funcer.freeDebateHandler();
+                funcer.freeDebateStart();
                 counterList[0] = {type:'free'};
                 returnStatus = true;
                 break;
             case 'free':
-                funcer.freeDebateHandler('');
+                funcer.freeDebateHandler();
                 returnStatus = true;
                 break;
             case 'state':
@@ -123,7 +123,7 @@ const Func = class func {
         }
         if(returnStatus) return;
         funcer.currentSelector = counterList[0].selector;
-        $(counterList[0].selector)).children('.card-title').html(counterList[0].title);
+        if(typeof counterList[0].title != 'undefined') $(counterList[0].selector).children('.card-title').html(counterList[0].title);
         if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector)).children('.card-title').html(counterList[1].title);
         try{
             $('.counter').each(function(){
@@ -147,18 +147,15 @@ const Func = class func {
         funcer.pauseInfo = [false,false];
         counterList.shift();
         let callback = function(event){
-        if(event.code == funcer.nextKey&&funcer.pauseInfo == [null,null]){
+            if(event.code != funcer.skipKey) return;
             counterList.shift();
             $('.counter').each(function(){
                 $(this).children().countdowntimer('stop','stop');
                 $(this).children().countdowntimer('destroy');
-                $(this).children().html('已结束');
+                $(this).children().html('已跳过');
             })
-            document.removeEventListener('keydown',callback);
-            return;
-        }
-        if(event.code != funcer.skipKey) return;
-            counterList.shift();
+            let hintText = `继续/跳过=${funcer.nextKey} | 暂停计时=${funcer.pauseKey} | 手动响铃=${funcer.bellKey}`;
+            $('.key-hint').html(hintText);
             document.removeEventListener('keydown',callback);
         }
         document.addEventListener('keydown',callback);
@@ -172,9 +169,21 @@ const Func = class func {
         return;
     }
     freeDebateHandler(){
+        if(funcer.pauseInfo == [null,null]){
+            counterList.shift();
+            $('.counter').each(function(){
+                $(this).children().countdowntimer('stop','stop');
+                $(this).children().countdowntimer('destroy');
+                $(this).children().html('请等候');
+            })
+            counterDaemon();
+            let hintText = `继续/跳过=${funcer.nextKey} | 暂停计时=${funcer.pauseKey} | 手动响铃=${funcer.bellKey}`;
+            $('.key-hint').html(hintText);
+            return;
+        }
         if(funcer.currentSelector == '#1'){
-            if(funcer.pauseInfo[1] == null && funcer.pauseInfo[2]){
-                funcer.pauseInfo[2] = false;
+            if(funcer.pauseInfo[0] == null && funcer.pauseInfo[1]){
+                funcer.pauseInfo[1] = false;
                 $('#2').children('.counter').children().countdowntimer('pause','resume');
                 funcer.currentSelector = '#2';
                 $('#2').attr('status','on');
@@ -189,8 +198,8 @@ const Func = class func {
             funcer.currentSelector = '#2';
             $('#2').children('.counter').children().countdowntimer('pause','resume');
         }else{
-            if(funcer.pauseInfo[2] == null && funcer.pauseInfo[1]){
-                funcer.pauseInfo[1] = false;
+            if(funcer.pauseInfo[1] == null && funcer.pauseInfo[0]){
+                funcer.pauseInfo[0] = false;
                 $('#1').children('.counter').children().countdowntimer('pause','resume');
                 funcer.currentSelector = '#1';
                 $('#1').attr('status','on');
