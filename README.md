@@ -1,6 +1,8 @@
 # Debatium
 辩论现场实用工具，一个美观，高自定义性的现场倒计时工具。
 
+点个star再用呗！☺️
+
 ## 特点
 🚩 使用暗色设计，更适合作为现场屏幕背景
 
@@ -27,7 +29,7 @@
 `JSON`对象中可以包含如下内容：
 
 ### JSON.selector
-选择要操作的计时器对象。
+选择要操作的计时器对象。接受的类型：`string`
 
 支持的参数有两种：`#1`和`#2`，作为JQuery选择器使用。
 
@@ -36,7 +38,7 @@
 除在`JSON.type`为`freeInit`时，其他情况都需要提供选择器。
 
 ### JSON.type
-表面当前项目的计时类型。必填。
+表面当前项目的计时类型。必填。接受的类型：`string`
 
 在开始之前，计时器会要求填写时长参数。填写对应的`type`即可使用相应设置的时长。
 
@@ -54,16 +56,18 @@
 需要自由辩论时，上述两个项目都为必需且必须放在一起。freeStart中的selector代表先开始计时的计时器
 
 ### JSON.title
-用于设置相应计时器的标题，留空则不会变更
+用于设置相应计时器的标题，留空则不会变更。接受的类型：`string`或`array object`。
 
 当`type`为`freeInit`时，`title`需要设置为一个`array`对象，其中包含两个`string`，依次为第一个和第二个计时器的标题，用于表示自由辩论中双方的名称。（例如：`['正方','反方']`）
 
 ### JSON.mainTitle
-设置主标题，留空则保持不变
+设置主标题，留空则保持不变。接受的类型：`string`
 
 # Credit 致谢
 特别感谢[z-spider/Timer](https://github.com/z-spider/Timer) 本计时器的响铃音频来自于此。
 
-JQuery，JQuerycountdownTimer，Google fonts & icons.
+本项目使用了JQuery，JQuerycountdownTimer，Google fonts&icons.
 
-## Made with ❤️ & [SparrowHe](https://github.com/sparrowhe)
+## Made with ❤️
+
+Zerlight x [SparrowHe](https://github.com/sparrowhe)
