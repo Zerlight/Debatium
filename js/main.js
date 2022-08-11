@@ -124,7 +124,7 @@ const Func = class func {
         if(returnStatus) return;
         funcer.currentSelector = counterList[0].selector;
         if(typeof counterList[0].title != 'undefined') $(counterList[0].selector).children('.card-title').html(counterList[0].title);
-        if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector)).children('.card-title').html(counterList[1].title);
+        if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector).children('.card-title').html(counterList[1].title);
         try{
             $('.counter').each(function(){
                 $(this).children().countdowntimer('stop','stop');
