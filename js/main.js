@@ -86,6 +86,7 @@ const Func = class func {
             $(this).attr('status','off');
         })
         let second = 0;
+        let returnStatus = false;
         switch(counterList[0].type){
             case 'freeInit':
                 funcer.currentSelector = 'free';
@@ -96,15 +97,18 @@ const Func = class func {
                     $(this).children().countdowntimer('destroy');
                 })
                 funcer.freeDebateInit();
-                return;
+                returnStatus = true;
+                break;
             case 'freeStart':
                 funcer.currentSelector = counterList[0].selector;
                 funcer.freeDebateHandler();
                 counterList[0] = {type:'free'};
-                return;
+                returnStatus = true;
+                break;
             case 'free':
                 funcer.freeDebateHandler('');
-                return;
+                returnStatus = true;
+                break;
             case 'state':
                 second = funcer.duration.state;
                 break;
@@ -118,6 +122,7 @@ const Func = class func {
                 second = funcer.duration.conclusion;
                 break;
         }
+        if(returnStatus) return;
         funcer.currentSelector = counterList[0].selector;
         $(counterList[0].selector+' > .card-title').html(counterList[0].title);
         if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector+' > .card-title').html(counterList[1].title);
