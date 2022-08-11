@@ -35,8 +35,6 @@ const Func = class func {
         this.sparePage = null;
         this.pauseInfo = false;
         this.currentSelector = null;
-        this.tempArg = null;
-        this.tempSel = null;
     }
     ring30sBell(){
         let audio = document.getElementById('sound');
@@ -47,20 +45,20 @@ const Func = class func {
         audio.play();
     }
     pauseCounter(){
-        console.log(funcer.currentSelector, typeof funcer.pauseInfo, this.pauseInfo);
+        //console.log(funcer.currentSelector, typeof funcer.pauseInfo, this.pauseInfo);
         if(funcer.currentSelector == 'free') return;
         if(typeof funcer.pauseInfo == 'boolean'){
-            if(funcer.pauseInfo) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+            if(funcer.pauseInfo){$(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume"); funcer.pauseInfo = false;}
             else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo = true;};
         }else{
             if(funcer.currentSelector == '#1'){
                 if(funcer.pauseInfo[0] == null) return;
-                if(funcer.pauseInfo[0]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+                if(funcer.pauseInfo[0]){$(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume"); funcer.pauseInfo[0] = false;}
                 else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo[0] = true;};
             }
             if(funcer.currentSelector == '#2'){
                 if(funcer.pauseInfo[1] == null) return;
-                if(funcer.pauseInfo[1]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
+                if(funcer.pauseInfo[1]){$(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume"); funcer.pauseInfo[1] = true;}
                 else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo[1] = true;};
             }
         }
@@ -125,8 +123,8 @@ const Func = class func {
         }
         if(returnStatus) return;
         funcer.currentSelector = counterList[0].selector;
-        $(counterList[0].selector+' > .card-title').html(counterList[0].title);
-        if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector+' > .card-title').html(counterList[1].title);
+        $(counterList[0].selector)).children('.card-title').html(counterList[0].title);
+        if(counterList.length > 1 && counterList[0].selector != counterList[1].selector) $(counterList[1].selector)).children('.card-title').html(counterList[1].title);
         try{
             $('.counter').each(function(){
                 $(this).children().countdowntimer('stop','stop');
@@ -151,7 +149,7 @@ const Func = class func {
         let callback = function(event){
         if(event.code == funcer.nextKey&&funcer.pauseInfo == [null,null]){
             counterList.shift();
-                $('.counter').each(function(){
+            $('.counter').each(function(){
                 $(this).children().countdowntimer('stop','stop');
                 $(this).children().countdowntimer('destroy');
                 $(this).children().html('已结束');
@@ -167,6 +165,7 @@ const Func = class func {
         return;
     }
     freeDebateStart(){
+        $('.title').html('自由辩论');
         $(funcer.currentSelector).attr('status','on');
         $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','resume');
         if(funcer.currentSelector == '#1') funcer.pauseInfo = [false,true]; else funcer.pauseInfo = [true,false];
@@ -174,17 +173,35 @@ const Func = class func {
     }
     freeDebateHandler(){
         if(funcer.currentSelector == '#1'){
+            if(funcer.pauseInfo[1] == null && funcer.pauseInfo[2]){
+                funcer.pauseInfo[2] = false;
+                $('#2').children('.counter').children().countdowntimer('pause','resume');
+                funcer.currentSelector = '#2';
+                $('#2').attr('status','on');
+                $('#1').attr('status','off');
+                return;
+            }
             if(funcer.pauseInfo[1] == null) return;
             funcer.pauseInfo = [true,false];
             $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','pause');
             $(funcer.currentSelector).attr('status','off');
+            $('#2').attr('status','on');
             funcer.currentSelector = '#2';
             $('#2').children('.counter').children().countdowntimer('pause','resume');
         }else{
+            if(funcer.pauseInfo[2] == null && funcer.pauseInfo[1]){
+                funcer.pauseInfo[1] = false;
+                $('#1').children('.counter').children().countdowntimer('pause','resume');
+                funcer.currentSelector = '#1';
+                $('#1').attr('status','on');
+                $('#2').attr('status','off');
+                return;
+            }
             if(funcer.pauseInfo[0] == null) return;
             funcer.pauseInfo = [false,true];
             $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','pause');
             $(funcer.currentSelector).attr('status','off');
+            $('#1').attr('status','on');
             funcer.currentSelector = '#1';
             $('#1').children('.counter').children().countdowntimer('pause','resume');
         }
