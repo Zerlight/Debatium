@@ -24,8 +24,8 @@ const Func = class func {
         this.duration = class{};
         this.nextKey = 'PageDown';
         this.skipKey = 'PageUp';
-        this.pauseKey = 'keyP';
-        this.bellKey = 'keyB';
+        this.pauseKey = 'KeyP';
+        this.bellKey = 'KeyB';
         this.duration.state = 3 * 60;
         this.duration.query = 30;
         this.duration.queryConclude = 2 * 60;
@@ -47,20 +47,21 @@ const Func = class func {
         audio.play();
     }
     pauseCounter(){
+        console.log(funcer.currentSelector, typeof funcer.pauseInfo, this.pauseInfo);
         if(funcer.currentSelector == 'free') return;
-        if(typeof funcer.pauseInfo == 'string'){
+        if(typeof funcer.pauseInfo == 'boolean'){
             if(funcer.pauseInfo) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
-            else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+            else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo = true;};
         }else{
             if(funcer.currentSelector == '#1'){
                 if(funcer.pauseInfo[0] == null) return;
                 if(funcer.pauseInfo[0]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
-                else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+                else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo[0] = true;};
             }
             if(funcer.currentSelector == '#2'){
                 if(funcer.pauseInfo[1] == null) return;
                 if(funcer.pauseInfo[1]) $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","resume");
-                else $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause");
+                else { $(funcer.currentSelector).children('.counter').children().countdowntimer("pause","pause"); funcer.pauseInfo[1] = true;};
             }
         }
     }
@@ -220,7 +221,7 @@ const Func = class func {
                     funcer.counterDaemon();
                     document.addEventListener('keydown',function(event){
                         if(event.code == funcer.nextKey) funcer.counterDaemon();
-                        if(event.code == funcer.bellKey) funcer.ring30sBell();
+                        if(event.code == funcer.bellKey) funcer.ring30sBell()
                         if(event.code == funcer.pauseKey) funcer.pauseCounter();
                     })
                 })
