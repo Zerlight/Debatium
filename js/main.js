@@ -95,12 +95,10 @@ const Func = class func {
                     $(this).children().countdowntimer('stop','stop');
                     $(this).children().countdowntimer('destroy');
                 })
-                funcer.tempArg = 'init';
-                funcer.freeDebateHandler();
+                funcer.freeDebateInit();
                 return;
             case 'freeStart':
-                funcer.tempArg = 'start';
-                funcer.tempSel = counterList[0].selector;
+                funcer.currentSelector = counterList[0].selector;
                 funcer.freeDebateHandler();
                 counterList[0] = {type:'free'};
                 return;
@@ -134,44 +132,41 @@ const Func = class func {
         $(counterList[0].selector).children('.counter').children().countdowntimer({seconds:second,timeUp:funcer.ringFinalBell,beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
         counterList.shift();
     }
-    freeDebateHandler(){
-        if(funcer.tempArg='init'){
-            $('.title').html('自由辩论·等候开始');
-            $('#1').children('.card-title').html(counterList[0].title[0]);
-            $('#2').children('.card-title').html(counterList[0].title[1]);
-            $('#1').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[0]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
-            $('#1').children('.counter').children().countdowntimer('pause','pause');
-            $('#2').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[1]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
-            $('#2').children('.counter').children().countdowntimer('pause','pause');
-            funcer.pauseInfo = [false,false];
+    freeDebateInit(){
+        $('.title').html('自由辩论·等候开始');
+        $('#1').children('.card-title').html(counterList[0].title[0]);
+        $('#2').children('.card-title').html(counterList[0].title[1]);
+        $('#1').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[0]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+        $('#1').children('.counter').children().countdowntimer('pause','pause');
+        $('#2').children('.counter').children().countdowntimer({seconds:funcer.duration.free,timeUp:function(){funcer.ringFinalBell();funcer.pauseInfo[1]=null},beforeExpiryTime:'00:00:00:30',beforeExpiryTimeFunction:funcer.ring30sBell});
+        $('#2').children('.counter').children().countdowntimer('pause','pause');
+        funcer.pauseInfo = [false,false];
+        counterList.shift();
+        let callback = function(event){
+        if(event.code == funcer.nextKey&&funcer.pauseInfo == [null,null]){
             counterList.shift();
-            let callback = function(event){
-                if(event.code == funcer.nextKey&&funcer.pauseInfo == [null,null]){
-                    counterList.shift();
-                    $('.counter').each(function(){
-                        $(this).children().countdowntimer('stop','stop');
-                        $(this).children().countdowntimer('destroy');
-                        $(this).children().html('已结束');
-                    })
-                    return;
-                }
-                if(event.code != funcer.skipKey) return;
-                counterList.shift();
-                document.removeEventListener('keydown',callback);
-            }
-            document.addEventListener('keydown',callback);
-            funcer.tempArg = null;
+                $('.counter').each(function(){
+                $(this).children().countdowntimer('stop','stop');
+                $(this).children().countdowntimer('destroy');
+                $(this).children().html('已结束');
+            })
+            document.removeEventListener('keydown',callback);
             return;
         }
-        if(funcer.tempArg='start'){
-            $(funcer.tempSel).attr('status','on');
-            $(funcer.tempSel).children('.counter').children().countdowntimer('pause','resume');
-            if(funcer.tempSel == '#1') funcer.pauseInfo = [false,true]; else funcer.pauseInfo = [true,false];
-            funcer.currentSelector = sel;
-            funcer.tempArg = null;
-            funcer.tempSel = null;
-            return;
+        if(event.code != funcer.skipKey) return;
+            counterList.shift();
+            document.removeEventListener('keydown',callback);
         }
+        document.addEventListener('keydown',callback);
+        return;
+    }
+    freeDebateStart(){
+        $(funcer.currentSelector).attr('status','on');
+        $(funcer.currentSelector).children('.counter').children().countdowntimer('pause','resume');
+        if(funcer.currentSelector == '#1') funcer.pauseInfo = [false,true]; else funcer.pauseInfo = [true,false];
+        return;
+    }
+    freeDebateHandler(){
         if(funcer.currentSelector == '#1'){
             if(funcer.pauseInfo[1] == null) return;
             funcer.pauseInfo = [true,false];
