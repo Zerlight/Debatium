@@ -1,5 +1,5 @@
 let counterList = [
-    {selector:'#1',type:'state',title:'正方一辩'},
+    {selector:'#1',type:'state',title:'正方一辩', mainTitle:'立论陈词'},
     {selector:'#2',type:'state',title:'反方一辩'},
     {selector:'#1',type:'state',title:'正方二辩'},
     {selector:'#2',type:'state',title:'反方二辩'},
