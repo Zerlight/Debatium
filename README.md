@@ -65,3 +65,5 @@
 特别感谢[z-spider/Timer](https://github.com/z-spider/Timer) 本计时器的响铃音频来自于此。
 
 JQuery，JQuerycountdownTimer，Google fonts & icons.
+
+## Made with ❤️ & [SparrowHe](https://github.com/sparrowhe)
