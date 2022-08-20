@@ -3,6 +3,8 @@
 
 点个star再用呗！☺️
 
+Github Pages Demo链接:[https://blog.zerlight.cc/Debatium](https://blog.zerlight.cc/Debatium)
+
 ## 特点
 🚩 使用暗色设计，更适合作为现场屏幕背景
 
