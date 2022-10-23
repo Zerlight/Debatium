@@ -70,7 +70,7 @@ body {
     font-size: 1.3rem;
 }
 
-.selection-btn > button , input{
+.selection-btn > button , input, select{
     border-radius: 5px;
     padding: 10px 20px 10px 20px;
     background-color: #616161;
@@ -144,4 +144,8 @@ body {
     background-color: #212121;
     opacity: 0.3;
     box-shadow: 0 0 0;
+}
+
+.card-content {
+    color: #FAFAFA;
 }

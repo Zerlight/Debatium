@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&display=swap');
+        </style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <style>
+            .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+            }
+            </style>
+        <title>Debatium | 设置</title>
+        <script src="js/setting.js"></script>
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/jQuery.countdownTimer.min.js"></script>
+        <link rel="stylesheet" href="css/jQuery.countdownTimer.css">
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    <body>
+        <div class="title">Debatium | 设置</div>
+        <div class="content" id="content" style="opacity: 1.0;">
+                <div class="card" style="width:calc(50% - 40px);height:calc(50% - 40px);float:left">
+                    <div class="card-title"><span class="material-symbols-outlined">settings</span>流程设置</div>
+                    <div class="card-selection">
+                        <div class="selection-text">选择器</div>
+                        <div class="selection-btn">
+                            <select id="selector">
+                                <option value ="#1">左侧</option>
+                                <option value ="#2">右侧</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-selection">
+                        <div class="selection-text">类型</div>
+                        <div class="selection-btn">
+                            <select id="select_type">
+                                <option value ="state">立论陈词</option>
+                                <option value ="query">质询</option>
+                                <option value="queryConclude">质询小结</option>
+                                <option value="conclusion">总结陈词</option>
+                                <option value="freeInit">初始化自由辩论</option>
+                                <option value="freeStart">开始自由辩论</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-selection" id="timer_title_selection">
+                        <div class="selection-text">计时器标题</div>
+                        <div class="selection-btn"><input id="timer_title" placeholder="请输入标题"></input></div>
+                    </div>
+                    <div class="card-selection" id="timer_title_selection_2" style="display: none;">
+                        <div class="selection-text">计时器标题</div>
+                        <div class="selection-btn"><input id="timer_title_l" placeholder="请输入左侧计时器标题"></input></div>
+                        <div class="selection-btn"><input id="timer_title_r" placeholder="请输入右侧计时器标题"></input></div>
+                    </div>
+                    <div class="card-selection">
+                        <div class="selection-text">过程标题</div>
+                        <div class="selection-btn"><input id="main_title" placeholder="请输入过程标题"></input></div>
+                    </div>
+                    <div class="selection-btn">
+                        <button id="btn_add">添加一条</button>
+                        <button id="btn_del">删除一条</button>
+                    </div>
+                </div>
+                <div class="card" style="width:calc(50% - 100px);height:calc(50% - 40px);float:right">
+                    <div class="card-content">
+                        <table id="table">
+                            <tr>
+                                <th>次序</th>
+                                <th>选择器</th>
+                                <th>类型</th>
+                                <th>计时器标题</th>
+                                <th>过程标题</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
