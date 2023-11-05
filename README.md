@@ -70,6 +70,8 @@ Github Pages Demo链接：[https://blog.zerlight.cc/Debatium](https://blog.zerli
 
 本项目使用了JQuery，JQuerycountdownTimer，Google fonts&icons.
 
-## Made with ❤️
+## Contributor 贡献者
 
-Zerlight x [SparrowHe](https://github.com/sparrowhe)
+Zerlight
+
+[SparrowHe](https://github.com/sparrowhe)
